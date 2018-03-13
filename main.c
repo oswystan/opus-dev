@@ -68,6 +68,10 @@ int main(int argc, const char *argv[]) {
         goto exit;;
     }
 
+    /*
+     * formats:
+     * int(size)|opus data|int(size)|opus data|....
+     */
     while (ptr < end) {
         framesize = ntohl(*(int*)(ptr));
         ptr += 4;
