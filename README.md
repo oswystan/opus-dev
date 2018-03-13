@@ -5,3 +5,7 @@ a libopus dev sample
 ```
 sudo apt install libopus-dev
 ```
+## play
+```
+ffplay -f s16le -ar 16k -ac 1 audio.pcm
+```

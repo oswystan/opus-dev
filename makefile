@@ -23,7 +23,7 @@ $(bin): $(obj)
 	@echo "[gen] "$@
 %.o:%.c
 	@echo "[ cc] "$@
-	@gcc -c $< -o $@
+	@gcc -c -Werror -Wall $< -o $@
 %.o:%.cpp
 	@echo "[cpp] "$@
 	@g++ -c $< -o $@

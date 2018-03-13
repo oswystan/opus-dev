@@ -31,7 +31,7 @@ uchar* map_file(const char* fn, size_t* size) {
     fseek(fp, 0L, SEEK_END);
     long pos = ftell(fp);
     *size = pos;
-    logd("size=%ld", pos);
+    logd("map size=%ld", pos);
     uchar* ptr = (uchar*)mmap(NULL, pos, PROT_READ|PROT_WRITE, MAP_PRIVATE, fileno(fp), 0);
     fclose(fp);
     return ptr;
@@ -47,7 +47,7 @@ int main(int argc, const char *argv[]) {
     size_t file_size = 0;
     OpusDecoder* opus = NULL;
     int framesize = 0;
-    ushort out[1024];
+    short out[1024];
 
     uchar* ptr = map_file(argv[1], &file_size);
     uchar* end = ptr + file_size;
@@ -73,8 +73,8 @@ int main(int argc, const char *argv[]) {
         ptr += 4;
         err = opus_decode(opus, ptr, framesize, out, sizeof(out)/sizeof(out[0]), 0);
         fwrite(out, err, sizeof(out[0]), fp);
-        logd("out size: %d", err);
         ptr += framesize;
+        logd("out size: %d", err);
     }
 
 exit:
