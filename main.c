@@ -28,11 +28,12 @@ uchar* map_file(const char* fn, size_t* size) {
         loge("fail to open file: %s", fn);
         return (uchar*)MAP_FAILED;
     }
+
     fseek(fp, 0L, SEEK_END);
     long pos = ftell(fp);
-    *size = pos;
-    logd("map size=%ld", pos);
     uchar* ptr = (uchar*)mmap(NULL, pos, PROT_READ|PROT_WRITE, MAP_PRIVATE, fileno(fp), 0);
+    *size = pos;
+
     fclose(fp);
     return ptr;
 }
@@ -67,7 +68,6 @@ int main(int argc, const char *argv[]) {
         goto exit;;
     }
 
-    logfunc();
     while (ptr < end) {
         framesize = ntohl(*(int*)(ptr));
         ptr += 4;
@@ -76,6 +76,7 @@ int main(int argc, const char *argv[]) {
         ptr += framesize;
         logd("out size: %d", err);
     }
+    logi("success");
 
 exit:
     if (opus) opus_decoder_destroy(opus);
