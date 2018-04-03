@@ -49,13 +49,14 @@ int main(int argc, const char *argv[]) {
     OpusDecoder* opus = NULL;
     int framesize = 0;
     short out[1024];
+    int fec_samples = 0;
 
     uchar* ptr = map_file(argv[1], &file_size);
     uchar* end = ptr + file_size;
     if(ptr == (uchar*)MAP_FAILED) {
         return -ENOMEM;
     }
-    FILE* fp = fopen("audio.pcm", "wb");
+    FILE* fp = fopen("dec.pcm", "wb");
     if (!fp) {
         loge("fail to open out file");
         err = errno;
@@ -73,12 +74,24 @@ int main(int argc, const char *argv[]) {
      * int(size)|opus data|int(size)|opus data|....
      */
     while (ptr < end) {
-        framesize = ntohl(*(int*)(ptr));
+        fec_samples = 0;
+        /*framesize = ntohl(*(int*)(ptr));*/
+        framesize = (*(int*)(ptr));
         ptr += 4;
         err = opus_decode(opus, ptr, framesize, out, sizeof(out)/sizeof(out[0]), 0);
-        fwrite(out, err, sizeof(out[0]), fp);
+        if (err > 0) {
+            fwrite(out, err, sizeof(out[0]), fp);
+        } else {
+            fec_samples = opus_packet_get_samples_per_frame(ptr, 16000);
+            err = opus_decode(opus, ptr, framesize, out, fec_samples, 1);
+            if (err > 0) {
+                fwrite(out, err, sizeof(out[0]), fp);
+            } else {
+                err = opus_decode(opus, ptr, framesize, out, sizeof(out)/sizeof(out[0]), 0);
+            }
+        }
         ptr += framesize;
-        logd("out size: %d", err);
+        logd("out size: %d fec: %d framesize=%d", err, fec_samples, framesize);
     }
     logi("success");
 

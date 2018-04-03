@@ -1,9 +1,11 @@
-# opus-dev
+## opus-dev
 a libopus dev sample
 
 ## install
 ```
 sudo apt install libopus-dev
+sudo apt install -y ffmpeg
+make
 ```
 ## play
 ```

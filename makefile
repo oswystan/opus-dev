@@ -9,7 +9,7 @@
 #######################################################################
 .PHONY: all clean
 
-bin := a.out
+bin := a.out enc
 src := $(wildcard *.c *.cpp)
 obj := $(src:.c=.o)
 obj := $(obj:.cpp=.o)
@@ -17,10 +17,15 @@ ld_flags := -lopus
 
 all: $(bin)
 
-$(bin): $(obj)
-	@gcc $^ -o $(bin) $(ld_flags)
+a.out: main.o
+	@gcc $^ -o $@ $(ld_flags)
 	@strip $@
 	@echo "[gen] "$@
+enc: enc.o
+	@gcc $^ -o $@ $(ld_flags)
+	@strip $@
+	@echo "[gen] "$@
+
 %.o:%.c
 	@echo "[ cc] "$@
 	@gcc -c -Werror -Wall $< -o $@
@@ -30,7 +35,7 @@ $(bin): $(obj)
 
 clean:
 	@echo "cleaning..."
-	@rm -f *.o $(bin) *.pcm
+	@rm -f *.o $(bin)
 	@echo "done."
 
 #######################################################################
