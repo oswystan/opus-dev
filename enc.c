@@ -59,6 +59,11 @@ int main(int argc, char *argv[])
         loge("fail to create encoder: %d", error);
         return error;
     }
+    ret = opus_encoder_ctl(encoder, OPUS_SET_INBAND_FEC(1));
+    if (ret != 0) {
+        loge("fail to enable fec");
+        return ret;
+    }
 
     uchar* ptr = map_file(argv[1], &filesize);
     if (ptr == MAP_FAILED) {
