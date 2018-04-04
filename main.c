@@ -39,6 +39,7 @@ uchar* map_file(const char* fn, size_t* size) {
 }
 
 int main(int argc, const char *argv[]) {
+    logi("version: %s", opus_get_version_string());
     if (argc != 2) {
         log("usage: %s <file>\n", argv[0]);
         return -EINVAL;
